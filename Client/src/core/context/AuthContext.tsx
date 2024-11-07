@@ -1,11 +1,16 @@
 import React, { createContext, useState, useEffect, useContext } from "react";
-import { login } from "@/api/auth/login";
+import { login } from "@/module/auth/login";
+import { validateToken } from "@/module/auth/validateToken";
 import { useCookies } from "react-cookie";
+import { logout } from "@/module/auth/logout";
 
 interface AuthContextType {
   user: any;
   isAuthenticated: boolean;
-  loginUser: (email: string, password: string) => Promise<{ message: string }>;
+  loginUser: (
+    username: string,
+    password: string
+  ) => Promise<{ message: string }>;
   logoutUser: () => void;
 }
 
@@ -18,17 +23,45 @@ export const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({
     "userToken",
     "userData",
   ]);
-  const [user, setUser] = useState<any>(cookies.userData || null);
-  const [isAuthenticated, setIsAuthenticated] = useState(!!cookies.userToken);
+  const [user, setUser] = useState<any>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const [loading, setLoading] = useState(true); // New loading state
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
-  const loginUser = async (email: string, password: string) => {
+  useEffect(() => {
+    const checkTokenValidity = async () => {
+      if (cookies.userToken) {
+        const isValid = await validateToken();
+
+        if (isValid) {
+          setIsAuthenticated(true);
+          const userData =
+            typeof cookies.userData === "string"
+              ? JSON.parse(cookies.userData)
+              : cookies.userData;
+          setUser(userData);
+        } else {
+          setIsAuthenticated(false);
+          setUser(null);
+          logoutUser();
+        }
+      } else {
+        setIsAuthenticated(false);
+        setUser(null);
+      }
+      setLoading(false); // Set loading to false after check completes
+    };
+
+    checkTokenValidity();
+  }, [cookies.userToken, cookies.userData]);
+
+  const loginUser = async (username: string, password: string) => {
     try {
-      const response = await login({ email, password });
+      const response = await login({ username, password });
       setUser(response.user);
       setIsAuthenticated(true);
 
@@ -42,19 +75,20 @@ export const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({
       });
       return { message: response.message };
     } catch (error: any) {
-      // console.error("Login failed", error.response?.data.error);
+      console.error("Login failed", error);
       throw error;
     }
   };
 
-  const logoutUser = () => {
+  const logoutUser = async () => {
+    await logout();
     removeCookie("userToken", { path: "/" });
     removeCookie("userData", { path: "/" });
     setUser(null);
     setIsAuthenticated(false);
   };
 
-  if (!isMounted) {
+  if (!isMounted || loading) {
     return null;
   }
 
