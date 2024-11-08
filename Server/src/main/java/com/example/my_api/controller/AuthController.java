@@ -59,11 +59,12 @@ public class AuthController {
     public ResponseEntity<String> register(@RequestBody AuthRequestDto loginRequestDto) {
         String username = loginRequestDto.getUsername();
         String password = loginRequestDto.getPassword();
+        String role = loginRequestDto.getRole();
 
         if (userService.findByUsername(username).isPresent()) {
             return ResponseEntity.status(409).body("Username already taken");
         }
-        User user = new User(username, password);
+        User user = new User(username, password, role);
         userService.saveUser(user);
         return ResponseEntity.ok("User registered successfully");
     }
