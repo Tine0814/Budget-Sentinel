@@ -21,10 +21,9 @@ export const useHeaderTitleContext = (): HeaderTitleContextType => {
   return context;
 };
 
-// Define a mapping of route paths to their respective titles
 const routeTitleMap: Record<string, string> = {
   "/": "Login",
-  "/Dashboard": "Dashboard",
+  "/dashboard": "Dashboard",
 };
 
 export const HeaderTitleContextProvider: React.FC<

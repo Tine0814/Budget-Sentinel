@@ -1,36 +1,18 @@
 import React from "react";
 import { Box, Container, Typography, Link, Paper } from "@mui/material";
 import { AtomButton, AttomTextField } from "@/components";
-import { Control, SubmitHandler, UseFormHandleSubmit } from "react-hook-form";
 import { LoginFormType } from "@/core/Schema";
-import { useAuth } from "@/core/context";
+import { FormProps } from "@/core/types";
 
-type Props = {
-  control: Control<LoginFormType>;
-  handleSubmit: UseFormHandleSubmit<LoginFormType>;
-  onSubmit: SubmitHandler<LoginFormType>;
-  isLoading: boolean;
-};
+type LoginFormProps = FormProps<LoginFormType>;
 
-export default function LoginForm({
-  control,
-  handleSubmit,
-  onSubmit,
-  isLoading,
-}: Props) {
-  const { user, logoutUser } = useAuth();
-
+export default function LoginForm(props: LoginFormProps) {
   return (
     <Container
       component="main"
       maxWidth="md"
       className="h-screen flex items-center flex-col justify-center"
     >
-      <p className="dark:text-white">Name: {user?.name}</p>
-      <p className="dark:text-white">Email: {user?.email}</p>
-      <button onClick={logoutUser} className="dark:text-white">
-        Logout
-      </button>
       <Box
         sx={{
           display: "flex",
@@ -38,11 +20,7 @@ export default function LoginForm({
           alignItems: "center",
         }}
       >
-        <Paper
-          elevation={0}
-          sx={{ padding: 4, width: "100%" }}
-          className="dark:bg-gray-800 dark:text-white"
-        >
+        <Paper elevation={0} sx={{ padding: 4, width: "100%" }} className=" ">
           <Box
             sx={{
               display: "flex",
@@ -51,19 +29,19 @@ export default function LoginForm({
               mb: 3,
             }}
           >
-            <Typography component="h1" variant="h5" className="dark:text-white">
+            <Typography component="h1" variant="h5" className="">
               Sign in
             </Typography>
           </Box>
           <Box>
             <AttomTextField
-              name="email"
-              control={control}
-              label="Email Address"
+              name="username"
+              control={props.control}
+              label="Username"
             />
             <AttomTextField
               name="password"
-              control={control}
+              control={props.control}
               label="Password"
               type="password"
             />
@@ -71,15 +49,15 @@ export default function LoginForm({
               type="submit"
               fullWidth
               variant="contained"
-              label={isLoading ? "Signing In..." : "Sign In"}
-              onClick={handleSubmit(onSubmit)}
-              isLoading={isLoading}
-              disabled={isLoading}
+              label={props.isLoading ? "Signing In..." : "Sign In"}
+              onClick={props.handleSubmit(props.onSubmit)}
+              isLoading={props.isLoading}
+              disabled={props.isLoading}
             />
           </Box>
         </Paper>
       </Box>
-      <Typography variant="body2" className="dark:text-white">
+      <Typography variant="body2" className="">
         Dental POS ©{" "}
         <Link color="inherit" href="">
           J's Company

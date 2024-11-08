@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
+import { IoSunnySharp } from "react-icons/io5";
+import { FaMoon } from "react-icons/fa";
 import { useThemeContext } from "@/core/context";
-import { MoonIcon, SunIcon } from "@/assets";
 
 const MoleculeThemeToggleButton: React.FC = () => {
   const { toggleTheme, mode } = useThemeContext();
@@ -21,26 +22,18 @@ const MoleculeThemeToggleButton: React.FC = () => {
   return (
     <div
       onClick={handleToggle}
-      className="relative inline-block cursor-pointer"
+      className="flex items-center justify-center w-[80px] h-[30px] p-1 bg-gray-200 dark:bg-gray-600 rounded-full cursor-pointer relative transition-all duration-300"
     >
       <div
-        className={`transition-transform duration-300 ${
-          mode === "dark"
-            ? "opacity-0 scale-50 absolute"
-            : "opacity-100 scale-100"
-        }`}
+        className={`absolute h-6 w-6 bg-white dark:bg-gray-800 rounded-full transition-transform duration-300 
+          ${mode === "dark" ? "translate-x-full" : "-translate-x-full"}
+        `}
       >
-        <MoonIcon width="30" height="30" />
-      </div>
-
-      <div
-        className={`transition-transform duration-300 ${
-          mode === "light"
-            ? "opacity-0 scale-50 absolute"
-            : "opacity-100 scale-100"
-        }`}
-      >
-        <SunIcon width="30" height="30" />
+        {mode === "dark" ? (
+          <FaMoon className="text-yellow-400 text-[15px] mx-auto mt-1" />
+        ) : (
+          <IoSunnySharp className="text-yellow-400 text-[15px] mx-auto mt-1" />
+        )}
       </div>
     </div>
   );

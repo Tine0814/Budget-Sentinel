@@ -1,1 +1,1 @@
-export * from "./LoginForm/validation";
+export * from "./Auth/authSchema";

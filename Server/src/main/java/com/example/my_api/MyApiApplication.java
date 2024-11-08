@@ -21,7 +21,7 @@ public class MyApiApplication {
 
         return args -> {
             if (userRepository.count() == 0) {
-                userRepository.save(new User("dastine", passwordEncoder.encode("DjH@y081400")));
+                userRepository.save(new User("dastine", passwordEncoder.encode("DjH@y081400"), "Admin"));
                 System.out.println("Database has been seeded with new data.");
             } else {
                 System.out.println("Database has already been seeded. Skipping seeding process.");

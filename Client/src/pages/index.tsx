@@ -1,5 +1,4 @@
-import { LoginFormBlock } from "@/components";
-import PublicLayout from "@/components/templates/PublicLayout";
+import { LoginFormBlock, PublicLayout } from "@/components";
 
 export default function Home() {
   return (

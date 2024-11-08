@@ -1,12 +1,12 @@
 import { QueryClient, QueryClientProvider } from "react-query";
 // import { ThemeProvider, CssBaseline, useTheme } from "@mui/material";
 import { CssBaseline } from "@mui/material";
-import { HeaderTitleContextProvider } from "@/core/context/HeaderTitleContext";
 import { AtomToast } from "@/components";
 import {
   AuthProvider,
   ThemeToggleContextProvider,
   ToastProvider,
+  HeaderTitleContextProvider,
 } from "@/core/context";
 
 interface Props {}
@@ -24,6 +24,7 @@ const GlobalLayout: React.FC<React.PropsWithChildren<Props>> = ({
           <AtomToast autoClose={5000} hideProgressBar={false} />
           <HeaderTitleContextProvider>
             {/* <ThemeProvider theme={theme}> */}
+            {/* this is for Darkmode ThemeToggleContextProvider*/}
             <ThemeToggleContextProvider>{children}</ThemeToggleContextProvider>
             {/* </ThemeProvider> */}
           </HeaderTitleContextProvider>
