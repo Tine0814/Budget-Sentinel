@@ -8,6 +8,7 @@ import com.example.my_api.model.User;
 import com.example.my_api.service.TokenBlacklistService;
 import com.example.my_api.service.UserService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -36,7 +37,7 @@ public class AuthController {
                 .filter(user -> userService.checkPassword(password, user.getPassword()))
                 .map(user -> {
                     // Generate JWT token
-                    String accessToken = jwtUtils.generateToken(user.getId(), user.getUsername());
+                    String accessToken = jwtUtils.generateToken(user.getId(), user.getUsername(), user.getRole());
 
                     UserDto userDto = new UserDto(user.getId(), user.getUsername());
                     AuthResponseDto loginResponse = new AuthResponseDto(
@@ -86,6 +87,7 @@ public class AuthController {
     //logout api to destroy token
 
     @PostMapping("/logout")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<String> logout(@RequestHeader("Authorization") String authorizationHeader) {
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             String token = authorizationHeader.substring(7);
@@ -93,6 +95,24 @@ public class AuthController {
             return ResponseEntity.ok("Logout successful");
         }
         return ResponseEntity.badRequest().body("Invalid token");
+    }
+
+
+    @GetMapping("/protected-endpoint")
+    public ResponseEntity<String> getProtectedData(@RequestHeader("Authorization") String authHeader) {
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            String token = authHeader.substring(7);
+            String role = jwtUtils.extractUserRole(token);
+
+            if ("ADMIN".equals(role)) {
+                return ResponseEntity.ok("Access granted to SUPERADMIN");
+            } else if ("USER".equals(role)) {
+                return ResponseEntity.ok("Access granted to USER");
+            } else {
+                return ResponseEntity.status(403).body("Access denied");
+            }
+        }
+        return ResponseEntity.status(401).body("Unauthorized");
     }
     
     

@@ -47,9 +47,15 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(request -> buildCorsConfiguration())) // Apply custom CORS settings
                 .csrf(csrf -> csrf.disable()) // Disable CSRF for APIs using JWTs or stateless authentication
                 .authorizeHttpRequests(authorize -> authorize
-                    .requestMatchers("/api/auth/login").permitAll() // Public endpoints
-                    .anyRequest().authenticated()
-                )
+                // Auth-related endpoints
+                .requestMatchers("/api/auth/login").permitAll() 
+    
+                // All other endpoints require authentication
+                .requestMatchers("/api/users**").hasAnyAuthority("ADMIN", "SUPERADMIN") 
+                .requestMatchers("/ticket/**").hasAnyAuthority("USER", "ADMIN", "SUPERADMIN") 
+    
+                .anyRequest().authenticated()
+            )
         
                 .formLogin(form -> form.disable()); // Disable form-based login for REST APIs
         

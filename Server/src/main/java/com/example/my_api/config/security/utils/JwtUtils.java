@@ -23,10 +23,11 @@ public class JwtUtils {
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String generateToken(Long userId, String username) {
+    public String generateToken(Long userId, String username, String role) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("id", userId); 
         claims.put("username", username); 
+        claims.put("role", role);
         return createToken(claims, username);
     }
 
@@ -54,12 +55,17 @@ public class JwtUtils {
     }
 
     public String resolveToken(HttpServletRequest request) {
-    String bearerToken = request.getHeader("Authorization");
-    if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-        return bearerToken.substring(7); 
+        String bearerToken = request.getHeader("Authorization");
+        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7); 
+        }
+        return null;
     }
-    return null;
-}
+    
+    public String extractUserRole(String token) {
+        return extractClaim(token, claims -> claims.get("role", String.class));
+    }
+    
 
 
     private Claims extractAllClaims(String token) {
