@@ -3,7 +3,7 @@ import { makeAuthenticatedRequest } from "@/module/api/apiHelpers";
 interface User {
   id: number;
   username: string;
-  email: string;
+  role: string;
 }
 
 export const getUsers = async (): Promise<User[] | null> => {
