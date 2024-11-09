@@ -4,7 +4,7 @@ public class AuthRequestDto {
 
     private String username;
     private String password;
-    private String role;
+    private Integer role;
 
     public String getUsername() {
         return username;
@@ -22,11 +22,11 @@ public class AuthRequestDto {
         this.password = password;
     }
 
-    public String getRole(){
+    public Integer getRole(){
         return role;
     }
 
-    public void setRole(String role){
+    public void setRole(Integer role){
         this.role = role;
     }
 }

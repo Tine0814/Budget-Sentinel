@@ -23,7 +23,7 @@ public class JwtUtils {
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String generateToken(Long userId, String username, String role) {
+    public String generateToken(Long userId, String username, int role) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("id", userId); 
         claims.put("username", username); 
@@ -36,7 +36,7 @@ public class JwtUtils {
                 .setClaims(claims)
                 .setSubject(subject)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 5 * 60 * 1000)) 
+                .setExpiration(new Date(System.currentTimeMillis() + 10 * 60 * 60 * 1000)) 
                 .signWith(key)
                 .compact();
     }
@@ -62,9 +62,10 @@ public class JwtUtils {
         return null;
     }
     
-    public String extractUserRole(String token) {
-        return extractClaim(token, claims -> claims.get("role", String.class));
+    public Integer extractUserRole(String token) {
+        return extractClaim(token, claims -> claims.get("role", Integer.class));
     }
+    
     
 
 
