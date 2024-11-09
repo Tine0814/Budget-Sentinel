@@ -2,11 +2,15 @@ package com.example.my_api.config.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -33,6 +37,21 @@ public class SecurityConfig {
         this.tokenBlacklistService = tokenBlacklistService;
     }
 
+    /** Error handler for 401 no response in body postman and network */
+
+    @Bean
+    AccessDeniedHandler accessDeniedHandler() {
+        return (request, response, accessDeniedException) -> {
+        response.setStatus(HttpStatus.FORBIDDEN.value());
+        response.getWriter().write("Access Denied: " + accessDeniedException.getMessage());
+    };
+}
+
+    @Bean
+    AuthenticationEntryPoint authenticationEntryPoint() {
+        return new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED);
+    }
+
     /**
      * Configures the SecurityFilterChain, applying CORS, disabling CSRF for API-based authentication, 
      * and setting endpoint permissions.
@@ -47,9 +66,15 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(request -> buildCorsConfiguration())) // Apply custom CORS settings
                 .csrf(csrf -> csrf.disable()) // Disable CSRF for APIs using JWTs or stateless authentication
                 .authorizeHttpRequests(authorize -> authorize
-                    .requestMatchers("/api/auth/login").permitAll() // Public endpoints
-                    .anyRequest().authenticated()
-                )
+                // Auth-related endpoints
+                .requestMatchers("/api/auth/login").permitAll() 
+    
+                // All other endpoints require authentication
+                .requestMatchers("/api/users**").hasAnyAuthority("0", "1") // Assuming "0" is ADMIN, "1" is SUPERADMIN
+                .requestMatchers("/ticket/**").hasAnyAuthority("2", "0", "1")
+    
+                .anyRequest().authenticated()
+            )
         
                 .formLogin(form -> form.disable()); // Disable form-based login for REST APIs
         

@@ -1,5 +1,6 @@
 package com.example.my_api;
 
+import com.example.my_api.enums.Role;
 import com.example.my_api.model.User;
 import com.example.my_api.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
@@ -21,7 +22,9 @@ public class MyApiApplication {
 
         return args -> {
             if (userRepository.count() == 0) {
-                userRepository.save(new User("dastine", passwordEncoder.encode("DjH@y081400")));
+                userRepository.save(new User("dastineA", passwordEncoder.encode("Djh@y081400"), Role.ADMIN));
+                userRepository.save(new User("dastineSA", passwordEncoder.encode("Djh@y081400"), Role.SUPERADMIN)); 
+                userRepository.save(new User("dastineU", passwordEncoder.encode("Djh@y081400"), Role.USER));
                 System.out.println("Database has been seeded with new data.");
             } else {
                 System.out.println("Database has already been seeded. Skipping seeding process.");
