@@ -2,12 +2,7 @@ package com.example.my_api.model;
 
 import com.example.my_api.enums.Role;
 import com.example.my_api.converter.RoleConverter;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Convert;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "users")
@@ -17,30 +12,38 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "user_id", unique = true, nullable = false)
+    private String userId;
     private String username;
     private String password;
 
     @Convert(converter = RoleConverter.class) // Integrating the RoleConverter
     private Role role;
 
-    // Default constructor for JPA
     public User() {
     }
 
-    // Constructor
-    public User(String username, String password, Role role) {
+    public User(String username, String password, Role role, String userId) {
+        this.userId = userId;
         this.username = username;
         this.password = password;
         this.role = role;
     }
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getUsername() {
@@ -67,13 +70,15 @@ public class User {
         this.role = role;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", role=" + role +
-                '}';
-    }
+  
+    // @Override
+    // public String toString() {
+    //     return "User{" +
+    //             "id=" + id +
+    //             ", user_id='" + user_id + '\'' +
+    //             ", username='" + username + '\'' +
+    //             ", password='" + password + '\'' +
+    //             ", role=" + role +
+    //             '}';
+    // }
 }

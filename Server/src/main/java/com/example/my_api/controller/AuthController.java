@@ -8,8 +8,14 @@ import com.example.my_api.enums.Role;
 import com.example.my_api.model.User;
 import com.example.my_api.service.TokenBlacklistService;
 import com.example.my_api.service.UserService;
+import com.example.my_api.utils.UserIdGenerator;
+
+import java.util.Optional;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -38,9 +44,9 @@ public class AuthController {
                 .filter(user -> userService.checkPassword(password, user.getPassword()))
                 .map(user -> {
                     // Generate JWT token
-                    String accessToken = jwtUtils.generateToken(user.getId(), user.getUsername(), user.getRole().getCode());
+                    String accessToken = jwtUtils.generateToken(user.getUserId(), user.getUsername(), user.getRole().getCode());
 
-                    UserDto userDto = new UserDto(user.getId(), user.getUsername(), user.getRole(), user.getRole().getCode());
+                    UserDto userDto = new UserDto(user.getUserId(), user.getUsername(), user.getRole(), user.getRole().getCode());
                     AuthResponseDto loginResponse = new AuthResponseDto(
                             accessToken,
                             userDto,
@@ -69,7 +75,7 @@ public class AuthController {
             if (userService.findByUsername(username).isPresent()) {
                 return ResponseEntity.status(409).body("Username already taken");
             }
-            User user = new User(username, password, role);
+            User user = new User(username, password, role, UserIdGenerator.generate());
             userService.saveUser(user);
             return ResponseEntity.ok("User registered successfully");
         } catch (IllegalArgumentException e) {
@@ -131,7 +137,40 @@ public class AuthController {
         }
         return ResponseEntity.status(401).body("Unauthorized");
     }
+
+    @GetMapping("/oauth2/login-success")
+    public ResponseEntity<AuthResponseDto> handleOAuth2Login(OAuth2AuthenticationToken authentication) {
+        // Extract user details from OAuth2AuthenticationToken
+        OAuth2User oauth2User = authentication.getPrincipal();
+        String email = oauth2User.getAttribute("email"); // Adjust attribute names based on your provider
     
+        // Check if the user already exists in your database
+        Optional<User> existingUser = userService.findByUsername(email);
+        User user;
+        if (existingUser.isPresent()) {
+            // User exists
+            user = existingUser.get();
+        } else {
+            // New user, create an entry in your database
+            user = new User(email, "", Role.USER, UserIdGenerator.generate()); 
+            userService.saveUser(user);
+        }
     
+        // Generate JWT token for the user
+        String accessToken = jwtUtils.generateToken(user.getUserId(), user.getUsername(), user.getRole().getCode());
+    
+        // Create a response similar to the database login
+        UserDto userDto = new UserDto(user.getUserId(), user.getUsername(), user.getRole(), user.getRole().getCode());
+        AuthResponseDto loginResponse = new AuthResponseDto(
+            accessToken,
+            userDto,
+            "Login successful through OAuth2"
+        );
+    
+        return ResponseEntity.ok(loginResponse);
+    }
     
 }
+
+
+

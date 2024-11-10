@@ -3,6 +3,7 @@ import { login } from "@/module/auth/login";
 import { validateToken } from "@/module/auth/validateToken";
 import { useCookies } from "react-cookie";
 import { logout } from "@/module/auth/logout";
+import { oAuthLogin } from "@/module/auth/aoauthLogin";
 
 interface AuthContextType {
   user: any;
@@ -26,7 +27,7 @@ export const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({
   const [user, setUser] = useState<any>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
-  const [loading, setLoading] = useState(true); // New loading state
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setIsMounted(true);
@@ -47,13 +48,36 @@ export const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({
         } else {
           setIsAuthenticated(false);
           setUser(null);
-          logoutUser();
+          await logoutUser(); // Ensure tokens are cleared
         }
       } else {
-        setIsAuthenticated(false);
-        setUser(null);
+        try {
+          // Attempt OAuth login if no valid token exists
+          const userData = await oAuthLogin();
+          if (userData) {
+            setUser(userData.user);
+            setIsAuthenticated(true);
+
+            // Save tokens to cookies
+            setCookie("userToken", userData.access_token, {
+              path: "/",
+              maxAge: 3600,
+            });
+            setCookie("userData", JSON.stringify(userData.user), {
+              path: "/",
+              maxAge: 3600,
+            });
+          } else {
+            setIsAuthenticated(false);
+            setUser(null);
+          }
+        } catch (error) {
+          console.error("OAuth login failed", error);
+          setIsAuthenticated(false);
+          setUser(null);
+        }
       }
-      setLoading(false); // Set loading to false after check completes
+      setLoading(false);
     };
 
     checkTokenValidity();

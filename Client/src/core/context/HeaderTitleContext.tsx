@@ -24,6 +24,7 @@ export const useHeaderTitleContext = (): HeaderTitleContextType => {
 const routeTitleMap: Record<string, string> = {
   "/": "Login",
   "/dashboard": "Dashboard",
+  "/transactions": "Transactions",
 };
 
 export const HeaderTitleContextProvider: React.FC<

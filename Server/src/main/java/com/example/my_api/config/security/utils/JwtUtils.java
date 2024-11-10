@@ -23,9 +23,9 @@ public class JwtUtils {
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String generateToken(Long userId, String username, int role) {
+    public String generateToken(String userId, String username, int role) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("id", userId); 
+        claims.put("user_id", userId); 
         claims.put("username", username); 
         claims.put("role", role);
         return createToken(claims, username);
@@ -51,7 +51,7 @@ public class JwtUtils {
     }
 
     public Long extractUserId(String token) {
-        return extractClaim(token, claims -> claims.get("id", Long.class));
+        return extractClaim(token, claims -> claims.get("user_id", Long.class));
     }
 
     public String resolveToken(HttpServletRequest request) {

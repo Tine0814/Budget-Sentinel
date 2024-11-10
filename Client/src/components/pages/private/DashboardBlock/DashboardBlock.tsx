@@ -9,36 +9,36 @@ interface User {
 }
 
 const DashboardBlock = () => {
-  const [users, setUsers] = useState<User[] | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  // const [users, setUsers] = useState<User[] | null>(null);
+  // const [loading, setLoading] = useState<boolean>(true);
+  // const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      const userData = await getUsers();
-      if (userData) {
-        setUsers(userData);
-        setError(null);
-      } else {
-        setError("Failed to fetch users");
-      }
-      setLoading(false);
-    };
+  // useEffect(() => {
+  //   const fetchUsers = async () => {
+  //     const userData = await getUsers();
+  //     if (userData) {
+  //       setUsers(userData);
+  //       setError(null);
+  //     } else {
+  //       setError("Failed to fetch users");
+  //     }
+  //     setLoading(false);
+  //   };
 
-    fetchUsers();
-  }, []);
+  //   fetchUsers();
+  // }, []);
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  // if (loading) {
+  //   return <div>Loading...</div>;
+  // }
 
-  if (error) {
-    return <div>{error}</div>;
-  }
+  // if (error) {
+  //   return <div>{error}</div>;
+  // }
   return (
     <>
       <OverviewSection />
-      <div>
+      {/* <div>
         <h1>User List</h1>
         {users && users.length > 0 ? (
           <ul>
@@ -52,7 +52,7 @@ const DashboardBlock = () => {
         ) : (
           <p>No users found</p>
         )}
-      </div>
+      </div> */}
     </>
   );
 };

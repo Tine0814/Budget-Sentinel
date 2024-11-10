@@ -14,3 +14,12 @@ body {
 html {
   scroll-behavior: smooth;
 }
+
+* {
+  /* outline: 2px solid red; */
+}
+
+.bluring {
+  background: rgb(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+}

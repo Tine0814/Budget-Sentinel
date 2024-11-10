@@ -12,5 +12,5 @@ export default function index() {
 index.isPrivate = true;
 
 index.getLayout = function getLayout(page: React.ReactElement) {
-  return <PrivateLayout pageTitle="Dashboard">{page}</PrivateLayout>;
+  return <PrivateLayout>{page}</PrivateLayout>;
 };
