@@ -37,6 +37,7 @@ const config: Config = {
         "primary-color-dark": "#6b83dd",
         "main-header-light": "#4c2250",
         "main-header-dark": "#300c34",
+        "main-secondarycard": "#161046",
         "main-background-light": "#f4f4f5",
         "main-background-dark": "#1f1572",
         "secondary-background-light": "#E5E7EB",

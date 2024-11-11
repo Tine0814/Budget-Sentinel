@@ -37,16 +37,16 @@ const PrivateLayout: React.FC<PrivateLayoutProps> = ({
       <OrganismsAtmForm open={modalOpen} onClose={handleCloseModal} />
       <OrganismsSideBar isOpen={sidebarOpen} toggleSidebar={toggleSidebar} />
       <div
-        className={`flex-1 transition-all duration-300 pt-5 overflow-hidden
+        className={`flex-1 transition-all duration-300 pt-5 overflow-hidden 
              `}
       >
-        <OrganismsNavBar
-          isOpen={sidebarOpen}
-          toggleSidebar={toggleSidebar}
-          pageTitle={pageTitle}
-          toggleCard={toggleCard}
-        />
-        <div className="p-4 py-20 h-full overflow-x-hidden overflow-y-auto">
+        <div className="p-4 h-full overflow-x-auto">
+          <OrganismsNavBar
+            isOpen={sidebarOpen}
+            toggleSidebar={toggleSidebar}
+            pageTitle={pageTitle}
+            toggleCard={toggleCard}
+          />
           {children}
         </div>
       </div>

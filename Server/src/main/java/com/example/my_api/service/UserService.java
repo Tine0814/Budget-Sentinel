@@ -2,7 +2,6 @@ package com.example.my_api.service;
 
 import com.example.my_api.model.User;
 import com.example.my_api.repository.UserRepository;
-import com.example.my_api.utils.UserIdGenerator;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -29,9 +28,6 @@ public class UserService {
     }
     
     public void saveUser(User user) {
-        if(user.getUserId() == null) {
-            user.setUserId(UserIdGenerator.generate());
-        }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
     }

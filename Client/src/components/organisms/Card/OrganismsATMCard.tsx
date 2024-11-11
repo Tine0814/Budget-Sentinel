@@ -27,7 +27,7 @@ export default function OrganismsATMCard(props: BaseToggleProps) {
 
   if (isLoading) {
     return (
-      <aside className="fixed overflow-y-auto overflow-x-hidden lg:overflow-hidden p-5 w-[300px] lg:w-[400px] inset-y-0 right-0 z-50 bg-main-background-dark dark:bg-secondary-background-dark shadow-md transform flex flex-col justify-between transition-all duration-300 ease-in-out lg:translate-y-0 lg:inset-0 lg:static">
+      <aside className="fixed overflow-y-auto overflow-x-hidden lg:overflow-hidden p-5 w-[200px] md:w-[250px] lg:w-[400px] inset-y-0 right-0 z-50 bg-main-background-dark dark:bg-secondary-background-dark shadow-md transform flex flex-col justify-between transition-all duration-300 ease-in-out lg:translate-y-0 lg:inset-0 lg:static">
         <div>
           <div className="flex gap-3 items-center mb-10">
             <Skeleton variant="circular" width={56} height={56} />

@@ -27,7 +27,7 @@ const OrganismsNavBar = (props: NavBarProps) => {
   }
 
   return (
-    <nav className="w-full h-16 p-3 pt-5 text-primary-text-light dark:text-primary-text-dark transition-all duration-300 ease-in-out">
+    <nav className="w-full min-h-16 p-3 pt-5 text-primary-text-light dark:text-primary-text-dark transition-all duration-300 ease-in-out">
       <div className="flex justify-between">
         <div className="flex items-center">
           <button onClick={props.toggleSidebar}>

@@ -8,7 +8,7 @@ import com.example.my_api.enums.Role;
 import com.example.my_api.model.User;
 import com.example.my_api.service.TokenBlacklistService;
 import com.example.my_api.service.UserService;
-import com.example.my_api.utils.UserIdGenerator;
+import com.example.my_api.utils.IdGenerator;
 
 import java.util.Optional;
 
@@ -75,7 +75,7 @@ public class AuthController {
             if (userService.findByUsername(username).isPresent()) {
                 return ResponseEntity.status(409).body("Username already taken");
             }
-            User user = new User(username, password, role, UserIdGenerator.generate());
+            User user = new User(username, password, role, IdGenerator.generateUserId());
             userService.saveUser(user);
             return ResponseEntity.ok("User registered successfully");
         } catch (IllegalArgumentException e) {
@@ -152,7 +152,7 @@ public class AuthController {
             user = existingUser.get();
         } else {
             // New user, create an entry in your database
-            user = new User(email, "", Role.USER, UserIdGenerator.generate()); 
+            user = new User(email, "", Role.USER, IdGenerator.generateUserId()); 
             userService.saveUser(user);
         }
     

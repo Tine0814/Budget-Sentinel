@@ -4,12 +4,12 @@ import { Skeleton } from "@mui/material";
 import { useLoading } from "@/core/hooks";
 
 const OverviewSection = () => {
-  const { isLoading, startLoading, stopLoading } = useLoading();
   const tickets = [
     { count: 36, label: "Current Balance", colorIndex: 0 },
     { count: 9, label: "Monthly Income", colorIndex: 1 },
     { count: 18, label: "Total Expenses", colorIndex: 3 },
   ];
+  const { isLoading, startLoading, stopLoading } = useLoading();
 
   useEffect(() => {
     startLoading();
@@ -21,21 +21,15 @@ const OverviewSection = () => {
   }, []);
 
   return (
-    <section className="py-3 grid grid-cols-1 gap-4 items-center md:grid-cols-2 lg:grid-cols-3">
-      {isLoading
-        ? tickets.map((_, index) => (
-            <div key={index}>
-              <Skeleton variant="rectangular" width="100%" height={150} />
-            </div>
-          ))
-        : tickets.map((ticket, index) => (
-            <CardOneMolecules
-              key={index}
-              count={ticket.count}
-              label={ticket.label}
-              colorIndex={ticket.colorIndex}
-            />
-          ))}
+    <section className="mb-5 grid grid-cols-1 gap-4 items-center md:grid-cols-2 lg:grid-cols-3">
+      {tickets.map((ticket, index) => (
+        <CardOneMolecules
+          key={index}
+          count={ticket.count}
+          label={ticket.label}
+          colorIndex={ticket.colorIndex}
+        />
+      ))}
     </section>
   );
 };

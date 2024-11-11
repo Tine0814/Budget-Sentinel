@@ -1,18 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import OverviewSection from "./OverviewSection";
-import { getUsers } from "@/module/services/user/getUser";
-
-interface User {
-  id: number;
-  username: string;
-  role: string;
-}
+import LatestTransactionSection from "./LatestTransactionSection";
+import { useLoading } from "@/core/hooks";
+import Skeleton from "@mui/material/Skeleton"; // Assuming Skeleton is imported correctly from MUI
 
 const DashboardBlock = () => {
-  // const [users, setUsers] = useState<User[] | null>(null);
-  // const [loading, setLoading] = useState<boolean>(true);
-  // const [error, setError] = useState<string | null>(null);
+  const { isLoading, startLoading, stopLoading } = useLoading();
 
+  useEffect(() => {
+    startLoading();
+    const timer = setTimeout(() => {
+      stopLoading();
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, [startLoading, stopLoading]);
   // useEffect(() => {
   //   const fetchUsers = async () => {
   //     const userData = await getUsers();
@@ -28,31 +30,25 @@ const DashboardBlock = () => {
   //   fetchUsers();
   // }, []);
 
-  // if (loading) {
-  //   return <div>Loading...</div>;
-  // }
-
-  // if (error) {
-  //   return <div>{error}</div>;
-  // }
   return (
     <>
-      <OverviewSection />
-      {/* <div>
-        <h1>User List</h1>
-        {users && users.length > 0 ? (
-          <ul>
-            {users.map((user) => (
-              <li key={user.id}>
-                <strong>Username:</strong> {user.username} <br />
-                <strong>Email:</strong> {user.role}
-              </li>
+      {isLoading ? (
+        <>
+          <div className="mb-5 grid grid-cols-1 gap-4 items-center md:grid-cols-2 lg:grid-cols-3">
+            {Array.from({ length: 3 }).map((_, index) => (
+              <div key={index} className="mb-4">
+                <Skeleton variant="rectangular" width="100%" height={150} />
+              </div>
             ))}
-          </ul>
-        ) : (
-          <p>No users found</p>
-        )}
-      </div> */}
+          </div>
+          <Skeleton variant="rectangular" width="100%" height={290} />
+        </>
+      ) : (
+        <>
+          <OverviewSection />
+          <LatestTransactionSection />
+        </>
+      )}
     </>
   );
 };
