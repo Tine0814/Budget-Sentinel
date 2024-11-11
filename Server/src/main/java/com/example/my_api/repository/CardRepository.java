@@ -2,8 +2,10 @@ package com.example.my_api.repository;
 
 import com.example.my_api.model.Card;
 
+
 import jakarta.transaction.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -19,4 +21,5 @@ public interface CardRepository extends JpaRepository<Card, Long> {
     void deleteByCardId(String cardId);
     
     Optional<Card> findByCardId(String cardId);
+    List<Card> findByUser_UserId(String userId);
 }

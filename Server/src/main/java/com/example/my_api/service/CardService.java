@@ -34,4 +34,8 @@ public class CardService {
     public void deleteByCardId(String card_id) {
         cardRepository.deleteByCardId(card_id);
     }
+
+    public List<Card> findCardsByUserId(String userId) {
+        return cardRepository.findByUser_UserId(userId);
+    }
 }

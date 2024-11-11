@@ -2,10 +2,8 @@ package com.example.my_api.model;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;
-
-// import com.example.my_api.converter.CardTypeConverter;
 import com.example.my_api.enums.CardType;
-
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "user_cards")
@@ -22,24 +20,24 @@ public class Card {
     private String cardHolder;
     private String bank;
     private BigDecimal balance;
-  
 
-    // @Convert(converter = CardTypeConverter.class)
     private CardType cardType;
 
-    private String userId; 
+    @ManyToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
+    @JsonBackReference
+    private User user;
 
-    // Constructors
     public Card() {}
 
-    public Card(String cardNumber, String cardHolder, String bank, BigDecimal balance, CardType cardType, String userId, String cardId) {
+    public Card(String cardNumber, String cardHolder, String bank, BigDecimal balance, CardType cardType, String cardId, User user) {
         this.cardNumber = cardNumber;
         this.cardHolder = cardHolder;
         this.bank = bank;
         this.balance = balance;
         this.cardType = cardType;
-        this.userId = userId;
         this.cardId = cardId;
+        this.user = user;
     }
 
     // Getters and Setters
@@ -91,18 +89,19 @@ public class Card {
         this.cardType = cardType;
     }
 
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
     public String getCardId() {
         return cardId;
     }
 
     public void setCardId(String cardId) {
         this.cardId = cardId;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user2) {
+        this.user = user2;
     }
 }

@@ -70,7 +70,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/login", "/api/auth/oauth2/login-success").permitAll()
                 // All other endpoints require authentication
                 .requestMatchers("/api/users**").hasAnyAuthority("0", "1") // Assuming "0" is ADMIN, "1" is SUPERADMIN
-                .requestMatchers("/ticket/**").hasAnyAuthority("2", "0", "1")
+                .requestMatchers("/api/cards/**").hasAnyAuthority("2", "0", "1")
                 .anyRequest().authenticated()
             )
             .oauth2Login(oauth2 -> oauth2

@@ -1,7 +1,8 @@
 package com.example.my_api.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.List;
 import com.example.my_api.enums.Role;
-// import com.example.my_api.converter.RoleConverter;
 import jakarta.persistence.*;
 
 @Entity
@@ -14,19 +15,21 @@ public class User {
 
     @Column(name = "user_id", unique = true, nullable = false)
     private String userId;
-    
+
     @Column(name = "username", nullable = false, length = 50)
     private String username;
-    
+
     @Column(name = "password", nullable = false)
     private String password;
-    
 
-    // @Convert(converter = RoleConverter.class) // Integrating the RoleConverter
     private Role role;
 
-    public User() {
-    }
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore 
+    private List<Card> cards;
+
+    // Constructors
+    public User() {}
 
     public User(String username, String password, Role role, String userId) {
         this.userId = userId;
@@ -35,6 +38,7 @@ public class User {
         this.role = role;
     }
 
+    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -75,15 +79,21 @@ public class User {
         this.role = role;
     }
 
-  
-    // @Override
-    // public String toString() {
-    //     return "User{" +
-    //             "id=" + id +
-    //             ", user_id='" + user_id + '\'' +
-    //             ", username='" + username + '\'' +
-    //             ", password='" + password + '\'' +
-    //             ", role=" + role +
-    //             '}';
-    // }
+    public List<Card> getCards() {
+        return cards;
+    }
+
+    public void setCards(List<Card> cards) {
+        this.cards = cards;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", userId='" + userId + '\'' +
+                ", username='" + username + '\'' +
+                ", role=" + role +
+                '}';
+    }
 }
