@@ -4,6 +4,7 @@ import { LoginFormType } from "@/core/Schema";
 import { FormProps } from "@/core/types";
 import { LogoOne } from "@/assets";
 import Image from "next/image";
+import { FaGithub } from "react-icons/fa";
 
 type LoginFormProps = FormProps<LoginFormType>;
 
@@ -11,6 +12,11 @@ export default function LoginForm(props: LoginFormProps) {
   const handleLogin = () => {
     window.location.href = "http://localhost:8080/oauth2/authorization/google";
   };
+
+  const handleGitHubLogin = () => {
+    window.location.href = "http://localhost:8080/oauth2/authorization/github";
+  };
+
   return (
     <div className="grid place-content-center min-h-screen bg-secondary-background-light dark:bg-secondary-background-dark">
       <div className=" flex items-center justify-center w-full mb-5">
@@ -51,7 +57,7 @@ export default function LoginForm(props: LoginFormProps) {
       <button
         onClick={handleLogin}
         type="button"
-        className="w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+        className="w-full px-4 py-2 text-sm font-medium bg-main-background-light dark:bg-main-background-dark border rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
       >
         <svg className="inline-block w-4 h-4 mr-2" viewBox="0 0 24 24">
           <path
@@ -72,6 +78,14 @@ export default function LoginForm(props: LoginFormProps) {
           />
         </svg>
         Continue with Google
+      </button>
+      <button
+        onClick={handleGitHubLogin}
+        type="button"
+        className="w-full mt-3 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 flex items-center justify-center"
+      >
+        <FaGithub className="w-5 h-5 mr-2" /> {/* GitHub Icon */}
+        Continue with GitHub
       </button>
     </div>
   );
