@@ -1,7 +1,7 @@
 package com.example.my_api.model;
 
 import com.example.my_api.enums.Role;
-import com.example.my_api.converter.RoleConverter;
+// import com.example.my_api.converter.RoleConverter;
 import jakarta.persistence.*;
 
 @Entity
@@ -14,10 +14,15 @@ public class User {
 
     @Column(name = "user_id", unique = true, nullable = false)
     private String userId;
+    
+    @Column(name = "username", nullable = false, length = 50)
     private String username;
+    
+    @Column(name = "password", nullable = false)
     private String password;
+    
 
-    @Convert(converter = RoleConverter.class) // Integrating the RoleConverter
+    // @Convert(converter = RoleConverter.class) // Integrating the RoleConverter
     private Role role;
 
     public User() {

@@ -1,6 +1,8 @@
 package com.example.my_api.enums;
 
-public enum CardType {
+import com.example.my_api.enums.base.CodedEnum;
+
+public enum CardType implements CodedEnum {
     ATM(0),
     GCASH(1),
     MAYA(2),

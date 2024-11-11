@@ -3,7 +3,7 @@ package com.example.my_api.model;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 
-import com.example.my_api.converter.CardTypeConverter;
+// import com.example.my_api.converter.CardTypeConverter;
 import com.example.my_api.enums.CardType;
 
 
@@ -24,7 +24,7 @@ public class Card {
     private BigDecimal balance;
   
 
-    @Convert(converter = CardTypeConverter.class)
+    // @Convert(converter = CardTypeConverter.class)
     private CardType cardType;
 
     private String userId; 
