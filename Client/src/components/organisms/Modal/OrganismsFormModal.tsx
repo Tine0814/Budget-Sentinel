@@ -38,15 +38,14 @@ export default function OrganismsFormModal<T extends FieldValues>(
             <form
               onSubmit={props.handleSubmit(onSubmit)}
               className={`${
-                props.isGrid && "grid grid-cols-2 items-center gap-2"
+                props.isGrid ? "grid grid-cols-2 items-center gap-2" : ""
               }`}
             >
               {props.fields?.map((field, index) => {
                 if (field.typeComponent === "select") {
                   return (
-                    <div className="col-span-2">
+                    <div className="col-span-2" key={index}>
                       <MoleculesComboBox
-                        key={index}
                         name={field.name as any}
                         control={props.control as Control<T>}
                         label={field.label || "Select an Option"}
@@ -57,10 +56,12 @@ export default function OrganismsFormModal<T extends FieldValues>(
                 }
                 return (
                   <div
-                    className={`${field.rows && field.maxRows && "col-span-2"}`}
+                    className={`${
+                      field.rows && field.maxRows ? "col-span-2" : ""
+                    }`}
+                    key={index}
                   >
                     <AttomTextField
-                      key={index}
                       name={field.name as any}
                       control={props.control as Control<T>}
                       type={field.type}
