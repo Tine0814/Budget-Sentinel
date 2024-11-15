@@ -40,11 +40,7 @@ export const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({
 
         if (isValid) {
           setIsAuthenticated(true);
-          const userData =
-            typeof cookies.userData === "string"
-              ? JSON.parse(cookies.userData)
-              : cookies.userData;
-          setUser(userData);
+          setUser(isValid.user);
         } else {
           setIsAuthenticated(false);
           setUser(null);
@@ -55,15 +51,10 @@ export const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({
           // Attempt OAuth login if no valid token exists
           const userData = await oAuthLogin();
           if (userData) {
-            setUser(userData.user);
             setIsAuthenticated(true);
 
             // Save tokens to cookies
             setCookie("userToken", userData.access_token, {
-              path: "/",
-              maxAge: 3600,
-            });
-            setCookie("userData", JSON.stringify(userData.user), {
               path: "/",
               maxAge: 3600,
             });
@@ -93,10 +84,6 @@ export const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({
         path: "/",
         maxAge: 3600,
       });
-      setCookie("userData", JSON.stringify(response.user), {
-        path: "/",
-        maxAge: 3600,
-      });
       return { message: response.message };
     } catch (error: any) {
       console.error("Login failed", error);
@@ -107,7 +94,6 @@ export const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({
   const logoutUser = async () => {
     await logout();
     removeCookie("userToken", { path: "/" });
-    removeCookie("userData", { path: "/" });
     setUser(null);
     setIsAuthenticated(false);
   };

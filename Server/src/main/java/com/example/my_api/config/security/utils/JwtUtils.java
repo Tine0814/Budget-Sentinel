@@ -50,8 +50,8 @@ public class JwtUtils {
         return extractClaim(token, Claims::getSubject);
     }
 
-    public Long extractUserId(String token) {
-        return extractClaim(token, claims -> claims.get("user_id", Long.class));
+    public String extractUserId(String token) {
+        return extractClaim(token, claims -> claims.get("user_id", String.class));
     }
 
     public String resolveToken(HttpServletRequest request) {

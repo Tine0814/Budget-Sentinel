@@ -10,8 +10,11 @@ import com.example.my_api.service.TokenBlacklistService;
 import com.example.my_api.service.UserService;
 import com.example.my_api.utils.IdGenerator;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
@@ -46,10 +49,8 @@ public class AuthController {
                     // Generate JWT token
                     String accessToken = jwtUtils.generateToken(user.getUserId(), user.getUsername(), user.getRole().getCode());
 
-                    UserDto userDto = new UserDto(user.getUserId(), user.getUsername(), user.getRole(), user.getRole().getCode());
                     AuthResponseDto loginResponse = new AuthResponseDto(
                             accessToken,
-                            userDto,
                             "Login successful"
                     );
 
@@ -57,7 +58,7 @@ public class AuthController {
                 })
                 .orElseGet(() -> {
                     // Return unauthorized response if login fails
-                    return ResponseEntity.status(401).body(new AuthResponseDto(null, null, "Invalid username or password"));
+                    return ResponseEntity.status(401).body(new AuthResponseDto(null, "Invalid username or password"));
                 });
     }
 
@@ -92,9 +93,26 @@ public class AuthController {
         }
 
         String token = authHeader.substring(7); // Remove "Bearer " prefix
-        boolean isValid = jwtUtils.validateToken(token, jwtUtils.extractUsername(token));
+        if (!jwtUtils.validateToken(token, jwtUtils.extractUsername(token))) {
+            return ResponseEntity.badRequest().body("{\"error\": \"Invalid token\"}");
+        }
+        String userId =  jwtUtils.extractUserId(token);
+       
+
+        Optional<User> userOptions = userService.findByUserId(userId); 
+        if (userOptions == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"error\": \"User not found\"}");
+        }
+
+        User user = userOptions.get();
+
+        UserDto userDto = new UserDto(user.getUserId(), user.getUsername(), user.getRole(), user.getRole().getCode());
         
-        return ResponseEntity.ok("{\"isValid\": " + isValid + "}");
+        Map<String, Object> response = new HashMap<>();
+        response.put("isValid", true);
+        response.put("user", userDto);
+                
+        return ResponseEntity.ok(response);
     }
 
     //logout api to destroy token
@@ -160,10 +178,8 @@ public class AuthController {
         String accessToken = jwtUtils.generateToken(user.getUserId(), user.getUsername(), user.getRole().getCode());
     
         // Create a response similar to the database login
-        UserDto userDto = new UserDto(user.getUserId(), user.getUsername(), user.getRole(), user.getRole().getCode());
         AuthResponseDto loginResponse = new AuthResponseDto(
             accessToken,
-            userDto,
             "Login successful through OAuth2"
         );
     

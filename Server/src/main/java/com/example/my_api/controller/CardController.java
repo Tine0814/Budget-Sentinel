@@ -45,37 +45,37 @@ public class CardController {
     }
     
 
- @PostMapping
-public ResponseEntity<?> createCard(@RequestBody Map<String, Object> cardRequestMap) {
-    // Extract fields from the request
-    String userId = (String) cardRequestMap.get("userId");
-    if (userId == null || userId.isEmpty()) {
-        return ResponseEntity.badRequest().body("User ID is required");
+    @PostMapping
+    public ResponseEntity<?> createCard(@RequestBody Map<String, Object> cardRequestMap) {
+        // Extract fields from the request
+        String userId = (String) cardRequestMap.get("userId");
+        if (userId == null || userId.isEmpty()) {
+            return ResponseEntity.badRequest().body("User ID is required");
+        }
+
+        // Fetch the user using userId
+        Optional<User> userOptional = userService.findByUserId(userId);
+        if (userOptional.isEmpty()) {
+            return ResponseEntity.badRequest().body("User not found");
+        }
+
+        User user = userOptional.get();
+
+        // Create a new Card instance and set its properties
+        Card card = new Card();
+        card.setCardNumber((String) cardRequestMap.get("cardNumber"));
+        card.setCardHolder((String) cardRequestMap.get("cardHolder"));
+        card.setBank((String) cardRequestMap.get("bank"));
+        card.setBalance(new BigDecimal(cardRequestMap.get("balance").toString()));
+        card.setCardId((String) cardRequestMap.get("cardId"));
+        card.setCardType(CardType.valueOf((String) cardRequestMap.get("cardType"))); // Ensure this matches an enum value
+        card.setUser(user);
+
+        // Save the card
+        Card savedCard = cardService.saveCard(card);
+
+        return ResponseEntity.ok(savedCard);
     }
-
-    // Fetch the user using userId
-    Optional<User> userOptional = userService.findByUserId(userId);
-    if (userOptional.isEmpty()) {
-        return ResponseEntity.badRequest().body("User not found");
-    }
-
-    User user = userOptional.get();
-
-    // Create a new Card instance and set its properties
-    Card card = new Card();
-    card.setCardNumber((String) cardRequestMap.get("cardNumber"));
-    card.setCardHolder((String) cardRequestMap.get("cardHolder"));
-    card.setBank((String) cardRequestMap.get("bank"));
-    card.setBalance(new BigDecimal(cardRequestMap.get("balance").toString()));
-    card.setCardId((String) cardRequestMap.get("cardId"));
-    card.setCardType(CardType.valueOf((String) cardRequestMap.get("cardType"))); // Ensure this matches an enum value
-    card.setUser(user);
-
-    // Save the card
-    Card savedCard = cardService.saveCard(card);
-
-    return ResponseEntity.ok(savedCard);
-}
 
     
 

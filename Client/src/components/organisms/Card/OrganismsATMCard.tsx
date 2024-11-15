@@ -1,5 +1,5 @@
 import { mirrorPic } from "@/assets";
-import { AtomAtmCard } from "@/components/atoms";
+import { AtomAtmCard, AtomSingleItemsCarousel } from "@/components";
 import { useLoading } from "@/core/hooks";
 import { BaseToggleProps } from "@/core/types";
 import { Avatar, Skeleton } from "@mui/material"; // Import Skeleton for loading state
@@ -94,7 +94,9 @@ export default function OrganismsATMCard(props: BaseToggleProps) {
               <IoMdAddCircle className="text-[40px] text-gray-400 group-hover:text-yellow-400 group-hover:drop-shadow-[0_0_8px_rgba(250,204,21,0.8)]" />
             </button>
           </div>
-          <AtomAtmCard />
+          <AtomSingleItemsCarousel>
+            <AtomAtmCard />
+          </AtomSingleItemsCarousel>
           <div className="absolute h-[150px] w-[150px] rounded-full bg-[#ff5656] shadow-md top-12 -left-4 -z-10"></div>
           <div className="absolute h-[90px] w-[90px] rounded-full bg-[#fcff56] shadow-md -bottom-5 -right-6 -z-10"></div>
         </div>
