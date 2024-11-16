@@ -54,7 +54,7 @@ export const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({
             setIsAuthenticated(true);
 
             // Save tokens to cookies
-            setCookie("userToken", userData.access_token, {
+            setCookie("userToken", userData.accessToken, {
               path: "/",
               maxAge: 3600,
             });
@@ -80,7 +80,7 @@ export const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({
       setUser(response.user);
       setIsAuthenticated(true);
 
-      setCookie("userToken", response.access_token, {
+      setCookie("userToken", response.accessToken, {
         path: "/",
         maxAge: 3600,
       });
