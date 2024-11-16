@@ -3,20 +3,29 @@ package com.example.my_api.dto.auth;
 
 public class AuthResponseDto {
 
-    private String access_token;
+    private String accessToken;
+    private String refreshToken;
     private String message;
 
-    public AuthResponseDto(String access_token, String message) {
-        this.access_token = access_token;
+    public AuthResponseDto(String accessToken, String message, String refreshToken) {
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
         this.message = message;
     }
 
-    public String getAccess_token() {
-        return access_token;
+    public String getAccessToken() {
+        return accessToken;
     }
 
-    public void setAccess_token(String access_token) {
-        this.access_token = access_token;
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
+
+    public String getRefreshToken() {
+        return refreshToken;
+    }
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
     }
 
     public String getMessage() {
