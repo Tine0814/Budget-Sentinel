@@ -80,6 +80,7 @@ public class AuthController {
     @PostMapping("/refresh-token")
     public ResponseEntity<AuthResponseDto> refreshToken(@RequestBody Map<String, String> tokenRequest) {
         String refreshToken = tokenRequest.get("refreshToken");
+        System.err.println("Refresh token: " + refreshToken);
         try {
             AuthResponseDto response = authService.refreshToken(refreshToken);
             return ResponseEntity.ok(response);

@@ -67,7 +67,7 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable()) // Disable CSRF for APIs using JWTs or stateless authentication
             .authorizeHttpRequests(authorize -> authorize
                 // Allow access to login, registration, and OAuth2 endpoints
-                .requestMatchers("/api/auth/login", "/api/auth/oauth2/login-success").permitAll()
+                .requestMatchers("/api/auth/login", "/api/auth/oauth2/login-success", "/api/auth/refresh-token").permitAll()
                 // All other endpoints require authentication
                 .requestMatchers("/api/users**").hasAnyAuthority("0", "1") // Assuming "0" is ADMIN, "1" is SUPERADMIN
                 .requestMatchers("/api/cards/**").hasAnyAuthority("2", "0", "1")

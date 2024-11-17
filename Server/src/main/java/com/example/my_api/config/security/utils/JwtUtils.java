@@ -29,8 +29,9 @@ public class JwtUtils {
         claims.put("user_id", userId); 
         claims.put("username", username); 
         claims.put("role", role);
-        return createToken(claims, username, 10 * 60 * 60 * 1000); 
+        return createToken(claims, username, 2 * 60 * 1000); // 2 minutes
     }
+    
     
     public String generateRefreshToken(String userId) {
         Map<String, Object> claims = new HashMap<>();

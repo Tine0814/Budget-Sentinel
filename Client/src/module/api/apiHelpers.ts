@@ -15,6 +15,9 @@ export const makeAuthenticatedRequest = async <T>(
       url: endpoint,
       method: method,
       data: method === "POST" ? body : undefined,
+      headers: {
+        "Content-Type": "application/json",
+      },
     });
     return { data: response.data };
   } catch (error: any) {
