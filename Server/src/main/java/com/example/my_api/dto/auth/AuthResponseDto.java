@@ -1,33 +1,31 @@
 package com.example.my_api.dto.auth;
 
-import com.example.my_api.dto.user.UserDto;
 
 public class AuthResponseDto {
 
-    private String access_token;
-    private UserDto user;
+    private String accessToken;
+    private String refreshToken;
     private String message;
 
-    public AuthResponseDto(String access_token, UserDto user, String message) {
-        this.access_token = access_token;
-        this.user = user;
+    public AuthResponseDto(String accessToken, String message, String refreshToken) {
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
         this.message = message;
     }
 
-    public String getAccess_token() {
-        return access_token;
+    public String getAccessToken() {
+        return accessToken;
     }
 
-    public void setAccess_token(String access_token) {
-        this.access_token = access_token;
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
     }
 
-    public UserDto getUser() {
-        return user;
+    public String getRefreshToken() {
+        return refreshToken;
     }
-
-    public void setUser(UserDto user) {
-        this.user = user;
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
     }
 
     public String getMessage() {

@@ -5,11 +5,13 @@ interface LoginRequest {
   password: string;
 }
 
-interface LoginResponse {
-  access_token: string;
+export interface LoginResponse {
+  accessToken: string;
+  refreshToken: string;
   user: {
     id: number;
     username: string;
+    role: string;
   };
   message: string;
 }

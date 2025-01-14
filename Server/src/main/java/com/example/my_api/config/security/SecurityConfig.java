@@ -63,21 +63,24 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .cors(cors -> cors.configurationSource(request -> buildCorsConfiguration())) // Apply custom CORS settings
-                .csrf(csrf -> csrf.disable()) // Disable CSRF for APIs using JWTs or stateless authentication
-                .authorizeHttpRequests(authorize -> authorize
-                // Auth-related endpoints
-                .requestMatchers("/api/auth/login").permitAll() 
-    
+            .cors(cors -> cors.configurationSource(request -> buildCorsConfiguration())) // Apply custom CORS settings
+            .csrf(csrf -> csrf.disable()) // Disable CSRF for APIs using JWTs or stateless authentication
+            .authorizeHttpRequests(authorize -> authorize
+                // Allow access to login, registration, and OAuth2 endpoints
+                .requestMatchers("/api/auth/login", "/api/auth/oauth2/login-success", "/api/auth/refresh-token").permitAll()
                 // All other endpoints require authentication
                 .requestMatchers("/api/users**").hasAnyAuthority("0", "1") // Assuming "0" is ADMIN, "1" is SUPERADMIN
-                .requestMatchers("/ticket/**").hasAnyAuthority("2", "0", "1")
-    
+                .requestMatchers("/api/cards/**").hasAnyAuthority("2", "0", "1")
                 .anyRequest().authenticated()
             )
-        
-                .formLogin(form -> form.disable()); // Disable form-based login for REST APIs
-        
+            .oauth2Login(oauth2 -> oauth2
+            .defaultSuccessUrl("http://localhost:3000") 
+            .successHandler((request, response, authentication) -> {
+                response.sendRedirect("http://localhost:3000");
+            })
+        )
+            .formLogin(form -> form.disable()); // Disable form-based login for REST APIs
+        // Add JWT filter for custom JWT-based authentication
         http.addFilterBefore(new JwtAuthenticationFilter(jwtUtils, tokenBlacklistService), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

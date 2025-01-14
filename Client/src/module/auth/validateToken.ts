@@ -1,12 +1,25 @@
 import { makeAuthenticatedRequest } from "../api/apiHelpers";
 
-export const validateToken = async (): Promise<boolean> => {
-  const { data, error } = await makeAuthenticatedRequest<{ isValid: boolean }>(
-    "api/auth/validate-token"
-  );
-  if (error) {
-    console.error("Token validation failed:", error);
-    return false;
-  }
-  return data.isValid;
-};
+interface ValidateTokenResponse {
+  isValid: boolean;
+  user: {
+    id: number;
+    username: string;
+    role: string;
+  };
+}
+
+export const validateToken =
+  async (): Promise<ValidateTokenResponse | null> => {
+    const { data, error } =
+      await makeAuthenticatedRequest<ValidateTokenResponse>(
+        "api/auth/validate-token"
+      );
+
+    if (error) {
+      console.error("Token validation failed:", error);
+      return null;
+    }
+
+    return data;
+  };

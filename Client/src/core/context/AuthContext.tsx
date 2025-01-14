@@ -3,6 +3,8 @@ import { login } from "@/module/auth/login";
 import { validateToken } from "@/module/auth/validateToken";
 import { useCookies } from "react-cookie";
 import { logout } from "@/module/auth/logout";
+import { oAuthLogin } from "@/module/auth/aoauthLogin";
+import { useRefreshToken } from "@/module/auth/refreshToken";
 
 interface AuthContextType {
   user: any;
@@ -21,12 +23,13 @@ export const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({
 }) => {
   const [cookies, setCookie, removeCookie] = useCookies([
     "userToken",
+    "refreshToken",
     "userData",
   ]);
   const [user, setUser] = useState<any>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
-  const [loading, setLoading] = useState(true); // New loading state
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setIsMounted(true);
@@ -34,44 +37,85 @@ export const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({
 
   useEffect(() => {
     const checkTokenValidity = async () => {
-      if (cookies.userToken) {
+      if (cookies.userToken || cookies.refreshToken) {
         const isValid = await validateToken();
-
         if (isValid) {
           setIsAuthenticated(true);
-          const userData =
-            typeof cookies.userData === "string"
-              ? JSON.parse(cookies.userData)
-              : cookies.userData;
-          setUser(userData);
+          setUser(isValid.user);
         } else {
-          setIsAuthenticated(false);
-          setUser(null);
-          logoutUser();
+          const refreshed = await attemptTokenRefresh();
+          if (!refreshed) {
+            setIsAuthenticated(false);
+            setUser(null);
+            await logoutUser();
+          }
         }
       } else {
-        setIsAuthenticated(false);
-        setUser(null);
+        try {
+          const userData = await oAuthLogin();
+          if (userData) {
+            setIsAuthenticated(true);
+            setCookie("userToken", userData.accessToken, {
+              path: "/",
+              maxAge: 2 * 60 * 1000, // 1 hour expiry
+            });
+            setCookie("refreshToken", userData.refreshToken, {
+              path: "/",
+              maxAge: 7 * 24 * 60 * 60, // 7 days expiry
+            });
+          } else {
+            setIsAuthenticated(false);
+            setUser(null);
+          }
+        } catch (error) {
+          console.error("OAuth login failed", error);
+          setIsAuthenticated(false);
+          setUser(null);
+        }
       }
-      setLoading(false); // Set loading to false after check completes
+      setLoading(false);
     };
 
     checkTokenValidity();
-  }, [cookies.userToken, cookies.userData]);
+  }, [cookies.userToken, cookies.userData, cookies.refreshToken]);
+
+  const attemptTokenRefresh = async () => {
+    try {
+      if (cookies.refreshToken) {
+        const response = await useRefreshToken({
+          refreshToken: cookies.refreshToken,
+        });
+        if (response?.accessToken) {
+          setCookie("userToken", response.accessToken, {
+            path: "/",
+            maxAge: 2 * 60 * 1000,
+          });
+          setCookie("refreshToken", response.refreshToken, {
+            path: "/",
+            maxAge: 7 * 24 * 60 * 60,
+          });
+          return true;
+        }
+      }
+      return false;
+    } catch (error) {
+      console.error("Token refresh failed", error);
+      return false;
+    }
+  };
 
   const loginUser = async (username: string, password: string) => {
     try {
       const response = await login({ username, password });
       setUser(response.user);
       setIsAuthenticated(true);
-
-      setCookie("userToken", response.access_token, {
+      setCookie("userToken", response.accessToken, {
         path: "/",
-        maxAge: 3600,
+        maxAge: 2 * 60 * 1000, // 1 hour
       });
-      setCookie("userData", JSON.stringify(response.user), {
+      setCookie("refreshToken", response.refreshToken, {
         path: "/",
-        maxAge: 3600,
+        maxAge: 7 * 24 * 60 * 60, // 7 days
       });
       return { message: response.message };
     } catch (error: any) {
@@ -81,9 +125,9 @@ export const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({
   };
 
   const logoutUser = async () => {
-    await logout();
+    await logout({ refreshToken: cookies.refreshToken });
     removeCookie("userToken", { path: "/" });
-    removeCookie("userData", { path: "/" });
+    removeCookie("refreshToken", { path: "/" });
     setUser(null);
     setIsAuthenticated(false);
   };

@@ -30,7 +30,7 @@ export default function LoginFormBlock() {
       toast.executeToast(response?.message, "top-center", true, {
         type: "success",
       });
-      router.push("/dashboard");
+      // router.push("/dashboard");
     } catch (error: any) {
       toast.executeToast(errorHandler(error), "top-center", true, {
         type: "error",

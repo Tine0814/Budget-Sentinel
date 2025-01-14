@@ -1,17 +1,21 @@
 import Link from "next/link";
 import React, { SetStateAction, useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { FaTicket } from "react-icons/fa6";
-import { MdClose, MdHome, MdPerson } from "react-icons/md";
+import { MdClose, MdHome, MdSettings } from "react-icons/md";
 import { SidebarProps } from "@/core/types";
 import { useAuth } from "@/core/context";
+import { GiPayMoney } from "react-icons/gi";
+import { MoleculeThemeToggleButton } from "@/components";
+import { CiLogout } from "react-icons/ci";
+import { LogoTwo } from "@/assets";
+import Image from "next/image";
 
 const OrganismsSideBar = (props: SidebarProps) => {
   const currentYear = new Date().getFullYear();
   const [activeNavItem, setActiveNavItem] = useState("");
   const router = useRouter();
 
-  const { logoutUser, user } = useAuth();
+  const { logoutUser } = useAuth();
 
   const navItems = [
     {
@@ -20,9 +24,22 @@ const OrganismsSideBar = (props: SidebarProps) => {
       icon: <MdHome />,
     },
     {
-      title: "About",
-      url: "/",
-      icon: <MdPerson />,
+      title: "Transactions",
+      url: "/transactions",
+      icon: <GiPayMoney />,
+    },
+  ];
+
+  const bottomNavItems = [
+    {
+      title: "Settings",
+      icon: <MdSettings />,
+      onClick: () => handleClick("Settings"),
+    },
+    {
+      title: "Log out",
+      icon: <CiLogout />,
+      onClick: logoutUser,
     },
   ];
 
@@ -45,49 +62,88 @@ const OrganismsSideBar = (props: SidebarProps) => {
 
   return (
     <aside
-      className={`fixed overflow-hidden text-primary-text-dark dark:text-primary-text-dark inset-y-0 left-0 z-50 bg-main-background-light dark:bg-main-background-dark shadow-md transform flex flex-col justify-between ${
-        !props.isOpen ? "w-0 " : "w-64"
-      } transition-all duration-300 ease-in-out lg:inset-0`}
+      className={`fixed overflow-hidden w-56 pt-5 text-primary-text-light dark:text-primary-text-dark inset-y-0 left-0 z-50 bg-main-background-light dark:bg-main-background-dark shadow-md transform flex flex-col justify-between ${
+        props.isOpen ? "translate-x-0" : "-translate-x-full"
+      } transition-all duration-300 ease-in-out lg:translate-x-0 lg:inset-0 lg:static `}
     >
-      <div className="flex bg-main-header-light dark:bg-main-header-dark items-center justify-between h-16 px-6">
-        <FaTicket className="text-[30px] seasaw-animation" />
-        <span className="text-2xl font-extrabold text-primary-color-light dark:text-primary-color-dark transition-colors duration-300">
-          ticketing
-        </span>
-        <button onClick={props.toggleSidebar} className="">
+      <div className="flex justify-end p-1 mb-5">
+        <MoleculeThemeToggleButton />
+      </div>
+      <div className="flex items-center justify-center h-16 px-6 p-5">
+        <Image src={LogoTwo} className="w-[80px]" alt="logo" />
+        <button onClick={props.toggleSidebar} className="lg:hidden">
           <MdClose className="h-6 w-6 transition-colors duration-300" />
         </button>
       </div>
 
       <nav className="mt-6 flex-1">
-        <ul className="space-y-2 px-4">
+        <ul className="space-y-2 ">
           {navItems.map((item, index) => (
-            <li key={index} className="flex items-center w-full">
+            <li
+              key={index}
+              className={`flex items-center w-full px-2 ${
+                item.title === activeNavItem &&
+                "border-r-4 border-primary-color-light dark:border-primary-color-dark"
+              } `}
+            >
               <Link
                 href={item.url}
                 className={`${
-                  item.title === activeNavItem
-                    ? " bg-primary-color-light dark:bg-primary-color-dark font-bold"
-                    : ""
-                } w-full flex items-center gap-3 py-2 px-4 rounded-md hover:bg-primary-color-light hover:dark:bg-primary-color-dark hover:text-primary-text-dark transition-colors duration-300`}
+                  item.title === activeNavItem &&
+                  " bg-hovered-text-light dark:bg-hovered-text-dark font-bold shadow-sm"
+                } w-full flex items-center gap-3 py-2 px-4 rounded-full hover:bg-hovered-text-light hover:dark:bg-hovered-text-dark transition-colors duration-300`}
                 onClick={() => handleClick(item.title)}
               >
-                <span className="text-[25px]">{item.icon}</span>
+                <span
+                  className={`text-[25px] ${
+                    item.title === activeNavItem && "text-primary-color-light"
+                  }`}
+                >
+                  {item.icon}
+                </span>
                 {item.title}
               </Link>
             </li>
           ))}
         </ul>
       </nav>
-      <button onClick={logoutUser}>logout</button>
-
-      <div className="px-4 py-2 bg-main-header-light dark:bg-main-header-dark">
-        <a
-          href="#"
-          className="block text-center text-sm transition-colors duration-300"
-        >
-          © {currentYear} SAFC IT Team
-        </a>
+      <div className="">
+        <ul className="space-y-2 ">
+          {bottomNavItems.map((item, index) => (
+            <li
+              key={index}
+              className={`flex items-center w-full px-2 ${
+                item.title === activeNavItem &&
+                "border-r-4 border-primary-color-light dark:border-primary-color-dark "
+              } `}
+            >
+              <div
+                className={`${
+                  item.title === activeNavItem &&
+                  " bg-hovered-text-light dark:bg-hovered-text-dark font-bold shadow-sm"
+                } w-full flex items-center gap-3 py-2 px-4 rounded-full hover:bg-hovered-text-light hover:dark:bg-hovered-text-dark transition-colors duration-300 cursor-pointer`}
+                onClick={item.onClick}
+              >
+                <span
+                  className={`text-[25px] ${
+                    item.title === activeNavItem && "text-primary-color-light"
+                  }`}
+                >
+                  {item.icon}
+                </span>
+                {item.title}
+              </div>
+            </li>
+          ))}
+        </ul>
+        <div className="px-4 py-2 mt-5">
+          <a
+            href="#"
+            className="block text-center text-sm transition-colors duration-300"
+          >
+            © {currentYear} Dastine Bernardo
+          </a>
+        </div>
       </div>
     </aside>
   );

@@ -5,25 +5,31 @@ import {
   Control,
   FieldValues,
   Path,
-  UnpackNestedValue,
   FieldPathValue,
   FieldPath,
 } from "react-hook-form";
+import { GiPayMoney } from "react-icons/gi";
 
 interface AttomsTextFieldProps<T extends FieldValues> {
   name: Path<T>;
   control: Control<T>;
   type?: OutlinedInputProps["type"];
   label?: string | JSX.Element | null;
-  defaultValue?: UnpackNestedValue<FieldPathValue<T, FieldPath<T>>>;
+  defaultValue?: FieldPathValue<T, FieldPath<T>>;
+  rows?: number;
+  maxRows?: number;
+  icon?: JSX.Element;
 }
 
-const AttomsTextField = <T extends FieldValues>({
+const AttomTextField = <T extends FieldValues>({
   name,
   control,
   label,
   defaultValue,
   type,
+  rows,
+  maxRows,
+  icon,
   ...props
 }: AttomsTextFieldProps<T>) => {
   return (
@@ -42,11 +48,22 @@ const AttomsTextField = <T extends FieldValues>({
           fullWidth
           type={type}
           variant="outlined"
+          slotProps={{
+            inputLabel: { shrink: true },
+            input: {
+              startAdornment: icon ? (
+                <span className="flex items-center mr-2">{icon}</span>
+              ) : undefined,
+            },
+          }}
           sx={{ mt: 2 }}
+          {...(rows ? { rows } : {})}
+          {...(rows ? {} : { maxRows })}
+          multiline={Boolean(rows || maxRows)}
         />
       )}
     />
   );
 };
 
-export default AttomsTextField;
+export default AttomTextField;

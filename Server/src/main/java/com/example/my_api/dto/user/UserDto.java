@@ -4,25 +4,25 @@ import com.example.my_api.enums.Role;
 
 public class UserDto {
 
-    private Long id;
+    private String user_id;
     private String username;
     private Role role;
     private Integer roleCode;
 
-    public UserDto(Long id, String username, Role role, Integer roleCode) {
-        this.id = id;
+    public UserDto(String user_id, String username, Role role, Integer roleCode) {
+        this.user_id = user_id;
         this.username = username;
         this.role = role;
         this.roleCode = roleCode;
 
     }
 
-    public Long getId() {
-        return id;
+    public String getUserId() {
+        return user_id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setUserId(String user_id) {
+        this.user_id = user_id;
     }
 
     public String getUsername() {

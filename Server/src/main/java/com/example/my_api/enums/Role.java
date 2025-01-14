@@ -1,6 +1,8 @@
 package com.example.my_api.enums;
 
-public enum Role {
+import com.example.my_api.enums.base.CodedEnum;
+
+public enum Role implements CodedEnum {
     SUPERADMIN(0),
     ADMIN(1),
     USER(2);
@@ -11,6 +13,7 @@ public enum Role {
         this.code = code;
     }
 
+    @Override
     public int getCode() {
         return code;
     }
